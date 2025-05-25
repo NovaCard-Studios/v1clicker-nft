@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Clicker NFT</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
   <script src="script.js"></script>
 </head>
 <body>
@@ -28,47 +27,42 @@
   <button id="loginButton">Iniciar sesión con Wallet</button>
   <p id="userInfo"></p>
 
+    <script src="https://unpkg.com/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
   <script>
-async function loginWithWallet() {
-  if (typeof window.ethereum === 'undefined') {
-    alert("Necesitas instalar MetaMask.");
-    return;
-  }
+    async function loginWithWallet() {
+      if (!window.ethereum) {
+        alert("Necesitas MetaMask para iniciar sesión.");
+        return;
+      }
 
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  await provider.send("eth_requestAccounts", []);
-  const signer = provider.getSigner();
-  const address = await signer.getAddress();
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
 
-  const mensaje = "Inicia sesión en NovaCard Studios";  // Puedes personalizarlo
-  const firma = await signer.signMessage(mensaje);
+        const mensaje = "Inicia sesión en NovaCard Studios";
+        const firma = await signer.signMessage(mensaje);
 
-  // Guardamos en localStorage como "sesión iniciada"
-  localStorage.setItem("userAddress", address);
-  localStorage.setItem("signature", firma);
+        localStorage.setItem("userAddress", address);
+        localStorage.setItem("signature", firma);
 
-  mostrarUsuario(address);
-}
+        document.getElementById("userInfo").innerText = "Sesión iniciada: " + address;
+      } catch (error) {
+        console.error("Error al iniciar sesión:", error);
+        alert("Error al iniciar sesión: " + error.message);
+      }
+    }
 
-function mostrarUsuario(address) {
-  document.getElementById("userInfo").innerText = "Sesión iniciada: " + address;
-}
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("loginButton").addEventListener("click", loginWithWallet);
 
-function comprobarSesion() {
-  const savedAddress = localStorage.getItem("userAddress");
-  if (savedAddress) {
-    mostrarUsuario(savedAddress);
-  }
-}
-
-// Al cargar la página, comprobamos si ya había sesión
-comprobarSesion();
-
-// Botón
-document.getElementById("loginButton").addEventListener("click", loginWithWallet);
-</script>
-
-
-
+      const savedAddress = localStorage.getItem("userAddress");
+      if (savedAddress) {
+        document.getElementById("userInfo").innerText = "Sesión iniciada: " + savedAddress;
+      }
+    });
+  </script>
 </body>
 </html>
