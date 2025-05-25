@@ -54,26 +54,16 @@ function cargarCartasJugador() {
   multiplicadorElemento.textContent = multiplicador;
 }
 
-const connectButton = document.getElementById("connectButton");
+document.getElementById("loginButton").addEventListener("click", loginWithWallet);
 
-  connectButton.addEventListener("click", async () => {
-    if (typeof window.ethereum !== 'undefined') {
-      try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        await provider.send("eth_requestAccounts", []);
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-
-        document.getElementById("walletAddress").innerText = "Conectado: " + address;
-        console.log("Wallet conectada:", address);
-      } catch (err) {
-        console.error("Error al conectar con la wallet:", err);
-        alert("No se pudo conectar con la wallet.");
-      }
-    } else {
-      alert("Necesitas instalar MetaMask en tu navegador.");
-    }
-  });
+document.addEventListener("DOMContentLoaded", () => {
+  const loginBtn = document.getElementById("loginButton");
+  if (loginBtn) {
+    loginBtn.addEventListener("click", loginWithWallet);
+  } else {
+    console.error("No se encontró el botón con ID loginButton");
+  }
+});
 
 // Iniciar juego
 cargarCartasJugador();
