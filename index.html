@@ -6,6 +6,7 @@
   <title>Clicker NFT</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+  <script src="script.js"></script>
 </head>
 <body>
   <div class="container">
@@ -24,9 +25,50 @@
     </div>
   </div>
 
-  <button onclick="connectWallet()">Conectar Wallet</button>
-  <p id="walletAddress"></p>
+  <button id="loginButton">Iniciar sesión con Wallet</button>
+  <p id="userInfo"></p>
 
-  <script src="script.js"></script>
+  <script>
+async function loginWithWallet() {
+  if (typeof window.ethereum === 'undefined') {
+    alert("Necesitas instalar MetaMask.");
+    return;
+  }
+
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  const signer = provider.getSigner();
+  const address = await signer.getAddress();
+
+  const mensaje = "Inicia sesión en NovaCard Studios";  // Puedes personalizarlo
+  const firma = await signer.signMessage(mensaje);
+
+  // Guardamos en localStorage como "sesión iniciada"
+  localStorage.setItem("userAddress", address);
+  localStorage.setItem("signature", firma);
+
+  mostrarUsuario(address);
+}
+
+function mostrarUsuario(address) {
+  document.getElementById("userInfo").innerText = "Sesión iniciada: " + address;
+}
+
+function comprobarSesion() {
+  const savedAddress = localStorage.getItem("userAddress");
+  if (savedAddress) {
+    mostrarUsuario(savedAddress);
+  }
+}
+
+// Al cargar la página, comprobamos si ya había sesión
+comprobarSesion();
+
+// Botón
+document.getElementById("loginButton").addEventListener("click", loginWithWallet);
+</script>
+
+
+
 </body>
 </html>
