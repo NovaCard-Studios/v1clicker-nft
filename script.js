@@ -54,5 +54,22 @@ function cargarCartasJugador() {
   multiplicadorElemento.textContent = multiplicador;
 }
 
+async function connectWallet() {
+  if (typeof window.ethereum !== 'undefined') {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      const signer = provider.getSigner();
+      const address = await signer.getAddress();
+      document.getElementById("walletAddress").innerText = "Conectado: " + address;
+    } catch (err) {
+      console.error(err);
+      alert("Error al conectar con la wallet.");
+    }
+  } else {
+    alert("Instala MetaMask para conectar tu wallet.");
+  }
+}
+
 // Iniciar juego
 cargarCartasJugador();
