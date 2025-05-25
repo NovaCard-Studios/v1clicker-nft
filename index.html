@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Clicker NFT</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -22,6 +23,9 @@
       <!-- Aquí se mostrarán las cartas -->
     </div>
   </div>
+
+  <button onclick="connectWallet()">Conectar Wallet</button>
+  <p id="walletAddress"></p>
 
   <script src="script.js"></script>
 </body>
